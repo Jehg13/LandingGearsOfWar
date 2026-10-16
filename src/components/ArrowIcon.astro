@@ -1,0 +1,39 @@
+---
+interface Props {
+  direction?: "external" | "down" | "south-east";
+  class?: string;
+}
+
+const { direction = "external", class: className } = Astro.props;
+---
+
+<svg
+  class={className}
+  viewBox="0 0 20 20"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.6"
+  stroke-linecap="square"
+  stroke-linejoin="miter"
+  aria-hidden="true"
+  focusable="false"
+>
+  {
+    direction === "external" ? (
+      <>
+        <path d="M6 14 14 6" />
+        <path d="M7 6h7v7" />
+      </>
+    ) : direction === "south-east" ? (
+      <>
+        <path d="m6 6 8 8" />
+        <path d="M7 14h7V7" />
+      </>
+    ) : (
+      <>
+        <path d="M10 4v11" />
+        <path d="m5 10 5 5 5-5" />
+      </>
+    )
+  }
+</svg>
