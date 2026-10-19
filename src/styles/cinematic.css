@@ -19,7 +19,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--color-red-bright);
+  background: linear-gradient(90deg, var(--color-red-deep), var(--color-red-bright), #f2f2f2);
   transform: scaleX(0);
   transform-origin: left center;
   box-shadow: 0 0 9px rgb(255 56 56 / 80%);
@@ -52,13 +52,19 @@
 
 .hero-art > img {
   object-position: 57% 43%;
-  filter: grayscale(0.3) brightness(0.66) contrast(1.13);
+  filter: grayscale(0.38) brightness(0.62) contrast(1.18);
 }
 
 .hero-art-shade {
   background:
     linear-gradient(90deg, var(--color-ink) 0%, rgb(9 9 9 / 92%) 12%, rgb(9 9 9 / 61%) 39%, rgb(9 9 9 / 10%) 76%, rgb(9 9 9 / 41%) 100%),
     linear-gradient(0deg, var(--color-ink) 0%, transparent 24%, transparent 70%, rgb(9 9 9 / 42%) 100%);
+}
+
+.hero-art-shade::after {
+  background:
+    linear-gradient(110deg, transparent 45%, rgb(126 13 24 / 15%) 76%, rgb(226 38 53 / 23%) 100%),
+    linear-gradient(30deg, transparent 63%, rgb(191 35 48 / 13%) 100%);
 }
 
 .hero::after {
@@ -90,7 +96,8 @@
   z-index: 1;
   overflow: clip;
   background:
-    radial-gradient(ellipse at 72% 48%, rgb(107 19 17 / 11%), transparent 52%),
+    radial-gradient(ellipse at 78% 46%, rgb(120 17 28 / 16%), transparent 48%),
+    radial-gradient(ellipse at 20% 80%, rgb(107 19 17 / 13%), transparent 40%),
     #0b0b0b;
   isolation: isolate;
 }
@@ -130,7 +137,7 @@
 .scene-image {
   object-fit: cover;
   object-position: center 43%;
-  filter: saturate(0.62) contrast(1.11) brightness(0.7);
+  filter: saturate(0.55) contrast(1.16) brightness(0.67);
   transform: scale(1.08);
   will-change: transform;
 }
@@ -148,9 +155,39 @@
   pointer-events: none;
   content: "";
   background:
-    linear-gradient(90deg, transparent 48%, rgb(229 36 38 / 11%) 100%),
+    linear-gradient(90deg, transparent 48%, rgb(177 20 36 / 16%) 100%),
     repeating-linear-gradient(0deg, transparent 0 79px, rgb(255 255 255 / 4%) 80px, transparent 81px);
   mask-image: linear-gradient(90deg, transparent 12%, #000 100%);
+}
+
+.scene-locust .scene-wash::after {
+  background:
+    radial-gradient(ellipse at 80% 72%, rgb(225 38 53 / 21%), transparent 46%),
+    linear-gradient(110deg, transparent 50%, rgb(242 242 242 / 8%) 100%);
+}
+
+.scene-squad .scene-wash::after {
+  background:
+    linear-gradient(90deg, transparent 32%, rgb(225 38 53 / 12%) 100%),
+    repeating-linear-gradient(90deg, transparent 0 119px, rgb(242 242 242 / 4%) 120px, transparent 121px);
+}
+
+.scene-arsenal .scene-wash::after {
+  background:
+    radial-gradient(ellipse at 72% 52%, rgb(242 242 242 / 12%), transparent 36%),
+    linear-gradient(0deg, rgb(121 13 24 / 18%), transparent 64%);
+}
+
+.scene-ruins .scene-wash::after {
+  background:
+    linear-gradient(180deg, transparent 35%, rgb(121 13 24 / 24%) 100%),
+    repeating-linear-gradient(0deg, transparent 0 99px, rgb(242 242 242 / 3%) 100px, transparent 101px);
+}
+
+.scene-finale .scene-wash::after {
+  background:
+    radial-gradient(ellipse at 81% 20%, rgb(225 38 53 / 24%), transparent 45%),
+    linear-gradient(125deg, transparent 46%, rgb(242 242 242 / 12%) 100%);
 }
 
 .scene-copy {
@@ -177,6 +214,12 @@
 .aftermath h2 em {
   color: var(--color-red-bright);
   font-style: normal;
+}
+
+.scene-locust h2 em,
+.scene-finale h2 em {
+  color: var(--color-red-bright);
+  text-shadow: 0 0 28px rgb(225 38 53 / 23%);
 }
 
 .scene-copy > p:not(.eyebrow) {
@@ -285,34 +328,10 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: var(--color-red-bright);
-  box-shadow: 0 0 10px var(--color-red);
+  background: linear-gradient(180deg, #f2f2f2, var(--color-red-bright));
+  box-shadow: 0 0 10px rgb(225 38 53 / 56%);
   transform: scaleY(0);
   transform-origin: top center;
-}
-
-.sequence-counter {
-  position: absolute;
-  z-index: 4;
-  top: 50%;
-  right: max(47px, calc((100vw - 1420px) / 2));
-  display: flex;
-  gap: 7px;
-  color: rgb(241 238 232 / 55%);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  transform: translateY(-50%) rotate(90deg);
-  transform-origin: right center;
-}
-
-.sequence-counter i {
-  color: var(--color-red-bright);
-  font-style: normal;
-}
-
-.sequence-current {
-  color: var(--color-paper);
 }
 
 .sequence-nav {
@@ -366,10 +385,11 @@
   position: absolute;
   z-index: -2;
   inset: 0;
-  background-image: url("https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/gears-of-war-keyart-69d6e5931386b-2048x1152.jpg");
+  background-image: var(--aftermath-art);
   background-position: center 47%;
   background-size: cover;
   filter: saturate(0.38) brightness(0.48) contrast(1.16);
+  transform: scale(1.04);
 }
 
 .aftermath::after {
@@ -379,7 +399,8 @@
   content: "";
   background:
     linear-gradient(90deg, #080808 0%, rgb(8 8 8 / 89%) 36%, rgb(8 8 8 / 40%) 100%),
-    linear-gradient(0deg, #080808 0%, transparent 39%);
+    linear-gradient(0deg, #080808 0%, transparent 39%),
+    linear-gradient(110deg, transparent 42%, rgb(121 13 24 / 24%) 100%);
 }
 
 .aftermath-copy {
@@ -388,6 +409,11 @@
 
 .aftermath h2 {
   font-size: clamp(70px, 9vw, 124px);
+}
+
+.aftermath h2 em {
+  color: var(--color-red-bright);
+  text-shadow: 0 0 30px rgb(225 38 53 / 25%);
 }
 
 .aftermath-copy > p:not(.eyebrow) {
@@ -460,9 +486,6 @@
     right: 33px;
   }
 
-  .sequence-counter {
-    right: 47px;
-  }
 }
 
 @media (max-width: 760px) {
@@ -689,7 +712,6 @@
   }
 
   .sequence-progress,
-  .sequence-counter,
   .sequence-hint {
     display: none;
   }
@@ -761,6 +783,10 @@
   }
 
   .scene-image {
+    transform: none;
+  }
+
+  .aftermath-art {
     transform: none;
   }
 }

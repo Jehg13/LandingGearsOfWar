@@ -1,0 +1,109 @@
+---
+import { weapons } from "../data/weapons";
+
+const filters = [
+  { id: "all", label: "Todo el arsenal" },
+  { id: "assault", label: "Fusiles" },
+  { id: "shotguns", label: "Cuerpo a cuerpo" },
+  { id: "precision", label: "Precisión" },
+  { id: "pistols", label: "Pistolas" },
+  { id: "explosives", label: "Explosivos" },
+  { id: "heavy", label: "Pesadas" },
+  { id: "equipment", label: "Equipo" },
+  { id: "vehicles", label: "Vehículos" },
+];
+const initialWeapon = weapons[0];
+---
+
+<section class="catalog-section armory-section" id="armory" aria-labelledby="armory-title">
+  <canvas class="local-atmosphere" data-atmosphere="armory" aria-hidden="true"></canvas>
+  <div class="orientation-notice" data-orientation-notice hidden aria-live="polite">
+    <span class="rotation-device" aria-hidden="true">
+      <span class="rotation-device-screen"></span>
+      <span class="rotation-arrow"></span>
+    </span>
+    <span class="orientation-copy">
+      <strong>GIRA TU DISPOSITIVO</strong>
+      <span>Para disfrutar la experiencia cinematográfica completa, coloca tu teléfono en horizontal.</span>
+    </span>
+  </div>
+  <header class="catalog-heading section-wrap">
+    <p class="eyebrow"><span></span> COALITION WEAPONS DIVISION // ARCHIVO DE CAMPO</p>
+    <h2 id="armory-title">ARMORY<span>ARSENAL DE LA CGO</span></h2>
+    <p>Armas emblemáticas y herramientas de supervivencia. Selecciona una ficha para inspeccionar su función.</p>
+  </header>
+
+  <div class="catalog-layout section-wrap" data-catalog-root="weapons">
+    <figure
+      class="catalog-hero"
+      data-catalog-visual
+      data-has-image={initialWeapon.image ? "true" : "false"}
+    >
+      <img
+        class="catalog-image"
+        src={initialWeapon.image}
+        alt={initialWeapon.imageAlt ?? ""}
+        width="1024"
+        height="576"
+        fetchpriority="low"
+        decoding="async"
+      />
+      <div class="catalog-visual-placeholder" data-visual-placeholder aria-hidden="true">
+        <span class="placeholder-crosshair"></span>
+        <span data-placeholder-label>ARCHIVO VISUAL PENDIENTE</span>
+      </div>
+      <div class="catalog-image-wash"></div>
+      <figcaption class="catalog-visual-caption" data-image-caption>
+        {initialWeapon.imageCaption ?? "ARCHIVO VISUAL PENDIENTE"}
+      </figcaption>
+      <span class="catalog-visual-status" data-visual-status>
+        {initialWeapon.image ? "RECURSO CARGADO" : "SIN IMAGEN ASIGNADA"}
+      </span>
+    </figure>
+
+    <article class="catalog-detail" aria-live="polite" aria-atomic="true">
+      <p class="catalog-kicker"><span class="status-light"></span> REGISTRO DE ARMAMENTO</p>
+      <h3 data-field="name">{initialWeapon.name}</h3>
+      <p class="catalog-category" data-field="categoryLabel">{initialWeapon.categoryLabel}</p>
+      <p class="catalog-description" data-field="description">{initialWeapon.description}</p>
+      <dl class="catalog-facts">
+        <div><dt>CLASIFICACIÓN</dt><dd data-field="role">{initialWeapon.role}</dd></div>
+        <div><dt>APARICIONES</dt><dd data-field="games">{initialWeapon.games}</dd></div>
+        <div><dt>RASGO DISTINTIVO</dt><dd data-field="detail">{initialWeapon.detail}</dd></div>
+        <div><dt>MUNICIÓN</dt><dd data-field="ammunition">{initialWeapon.ammunition}</dd></div>
+      </dl>
+      <p class="catalog-note" data-field="note" hidden></p>
+      <div class="catalog-step-controls">
+        <button type="button" data-previous aria-label="Arma anterior">ANTERIOR</button>
+        <button type="button" data-next aria-label="Arma siguiente">SIGUIENTE</button>
+      </div>
+    </article>
+
+    <aside class="catalog-selector" aria-label="Selector de armas">
+      <div class="catalog-filter-list" role="group" aria-label="Filtrar armas">
+        {filters.map((filter, index) => (
+          <button
+            type="button"
+            data-catalog-filter={filter.id}
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+      <ul class="catalog-entry-list">
+        {weapons.map((weapon, index) => (
+          <li data-catalog-entry data-filters={weapon.filters.join(" ")}>
+            <button type="button" data-catalog-item={weapon.id} aria-pressed={index === 0 ? "true" : "false"}>
+              <span class="entry-mark" aria-hidden="true"></span>
+              <span class="entry-label">{weapon.name}</span>
+              <span class="entry-category">{weapon.categoryLabel}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p class="catalog-empty" data-empty-state hidden>No hay armamento en esta categoría.</p>
+      <p class="catalog-instruction">USA ↑ ↓ O LOS CONTROLES PARA RECORRER EL ARCHIVO</p>
+    </aside>
+  </div>
+</section>

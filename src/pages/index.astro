@@ -3,22 +3,38 @@ import "../styles/global.css";
 import "../styles/cinematic.css";
 import "../styles/narrative.css";
 import "../styles/interface.css";
+import "../styles/catalog.css";
 import ArrowIcon from "../components/ArrowIcon.astro";
+import ArmorySection from "../components/ArmorySection.astro";
+import ThreatDatabaseSection from "../components/ThreatDatabaseSection.astro";
 
 const artwork = {
-  hero: "/images/gears-hero.webp",
-  keyart:
-    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/gears-of-war-keyart-69d6e5931386b-2048x1152.jpg",
+  hero:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/05/01_GoW_EDAY_StoryofEmergence_Final-6a1766321388d-2048x1152.jpg",
   locust:
-    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/gears-1-multiplayer-69d6ea471c35a.jpg",
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/05/06_GoW_EDAY_Drone_Final-6a176650a8f1a-2048x1152.jpg",
   squad:
-    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/gears-1-co-op-69d6e9d002b82.jpg",
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/05/02_GoW_EDAY_BravoSquad_Final-6a176637d1a6c-2048x1152.jpg",
+  combat:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/06/09_GoW_EDAY_DroneStruggle_Final-6a21e32f4f748-2048x1152-6a288c43344ca.jpg",
   lancer:
     "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/GoW_Reloaded_4K_ScreenShot_02-69dd6f1b3403f-1024x576.jpg",
   ruins:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/06/11_GoW_EDAY_CentralSquare_Final-6a21e3d35afa2-2048x1152-6a288c6496d66.jpg",
+  estate:
     "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/GoW_Reloaded_4K_ScreenShot_Estate-69dd6f0ddae56-1024x576.jpg",
   finale:
     "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/GoW_Reloaded_4K_ScreenShot_01op-69dd73f95d325-1024x576.jpg",
+  characterMarcus:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/06/16_GoW_EDAY_MarcusScowl_4K-6a21e50068520-2048x1152-6a288c754c2ea.jpg",
+  characterDom:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/06/12_GoW_EDAY_DomPayphone_4K-6a21e41c25f3a-2048x1152-6a288c85c9a92.jpg",
+  characterDelta:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/04/gears-1-co-op-69d6e9d002b82.jpg",
+  characterLocust:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/05/03_GoW_EDAY_Boomer_Final-6a17663e3da94-2048x1152.jpg",
+  closing:
+    "https://live.cdn.gearsofwar.com/gearsofwar/sites/3/2026/06/gears-eday-home-page-1024x576-6a14d78fe05aa-768x432-6a288cde6197b.jpg",
 };
 ---
 
@@ -30,9 +46,9 @@ const artwork = {
     <meta name="theme-color" content="#090909" />
     <meta
       name="description"
-      content="La última línea de defensa de la humanidad. Revive el origen de Gears of War."
+      content="Gears of War: Emergence. Una experiencia fan cinematográfica sobre el Día de la Emergencia y el Escuadrón Delta."
     />
-    <title>Gears of War — Emerge de las cenizas</title>
+    <title>Gears of War: Emergence — Emerge de las cenizas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,7 +57,6 @@ const artwork = {
     />
   </head>
   <body>
-    <canvas id="ember-field" aria-hidden="true"></canvas>
     <div class="site-shell">
       <header class="topbar">
         <a class="brand" href="#inicio" aria-label="Gears of War, inicio">
@@ -52,9 +67,10 @@ const artwork = {
         </a>
 
         <nav class="desktop-nav" aria-label="Navegación principal">
-          <a href="#historia">La historia</a>
+          <a href="#guerra">La guerra</a>
           <a href="#personajes">Personajes</a>
-          <a href="#arsenal">El arsenal</a>
+          <a href="#armory">El arsenal</a>
+          <a href="#threat-database">Amenazas</a>
         </nav>
 
         <span class="page-progress" aria-hidden="true">
@@ -66,9 +82,10 @@ const artwork = {
             <span></span><span></span>
           </summary>
           <nav aria-label="Navegación móvil">
-            <a href="#historia">La historia</a>
+            <a href="#guerra">La guerra</a>
             <a href="#personajes">Personajes</a>
-            <a href="#arsenal">El arsenal</a>
+            <a href="#armory">El arsenal</a>
+            <a href="#threat-database">Amenazas</a>
             <a href="https://www.gearsofwar.com/en-us/" target="_blank" rel="noreferrer">
               Sitio oficial <span class="interface-icon"><ArrowIcon /></span>
             </a>
@@ -88,12 +105,13 @@ const artwork = {
       <main>
         <section class="hero" id="inicio" aria-labelledby="hero-title">
           <div class="hero-art" aria-hidden="true">
+            <canvas class="local-atmosphere" data-atmosphere="hero" aria-hidden="true"></canvas>
             <img
               src={artwork.hero}
               alt=""
               fetchpriority="high"
-              width="1024"
-              height="487"
+              width="2048"
+              height="1152"
               decoding="async"
             />
             <div class="hero-art-shade"></div>
@@ -108,7 +126,7 @@ const artwork = {
           </div>
 
           <div class="hero-copy">
-            <p class="eyebrow"><span></span> LA ÚLTIMA LÍNEA DE DEFENSA</p>
+            <p class="eyebrow"><span></span> ARTE PROMOCIONAL // GEARS OF WAR: E-DAY</p>
             <h1 id="hero-title">
               EMERGE<br />
               <span>DE LAS</span><br />
@@ -139,10 +157,10 @@ const artwork = {
             </div>
           </div>
 
-          <div class="hero-stamp" aria-label="Delta Squad">
-            <span>DELTA</span>
-            <span class="stamp-center">D-01</span>
-            <span>STAND TOGETHER</span>
+          <div class="hero-stamp" aria-label="Día de la Emergencia">
+            <span>SERA</span>
+            <span class="stamp-center">E-DAY</span>
+            <span>EMERGENCE DAY</span>
           </div>
 
           <div class="hero-index" aria-hidden="true">
@@ -159,11 +177,9 @@ const artwork = {
 
         <section class="war-sequence" id="guerra" aria-label="La guerra de Sera">
           <div class="sequence-frame">
+            <canvas class="local-atmosphere" data-atmosphere="war" aria-hidden="true"></canvas>
             <div class="sequence-progress" aria-hidden="true">
               <span class="sequence-progress-fill"></span>
-            </div>
-            <div class="sequence-counter" aria-hidden="true">
-              <span class="sequence-current">01</span><i>/</i>06
             </div>
             <article
               class="sequence-scene scene-awakening"
@@ -174,15 +190,15 @@ const artwork = {
               <img
                 class="scene-image"
                 src={artwork.ruins}
-                alt="Fortificaciones y ruinas de Sera en una captura promocional oficial"
-                width="1024"
-                height="576"
-                loading="lazy"
+                alt="Plaza de Sera en arte promocional oficial de Gears of War: E-Day"
+                width="2048"
+                height="1152"
+                loading="eager"
                 decoding="async"
               />
               <div class="scene-wash"></div>
               <div class="scene-copy">
-                <p class="eyebrow"><span></span> SERA // DÍA DE LA EMERGENCIA</p>
+                <p class="eyebrow"><span></span> SERA // DÍA DE LA EMERGENCIA // ARTE E-DAY</p>
                 <h2 id="scene-awakening-title">EL MUNDO<br />SE <em>QUEBRÓ.</em></h2>
                 <p>De las entrañas de Sera surgió la Horda Locust. La civilización tenía las horas contadas.</p>
                 <a class="text-link" href="https://www.gearsofwar.com/en-us/games/gears-of-war/" target="_blank" rel="noreferrer">
@@ -200,15 +216,15 @@ const artwork = {
               <img
                 class="scene-image"
                 src={artwork.locust}
-                alt="Combate entre la CGO y la Horda Locust"
-                width="1024"
-                height="576"
-                loading="lazy"
+                alt="Drone Locust en arte promocional oficial de Gears of War: E-Day"
+                width="2048"
+                height="1152"
+                loading="eager"
                 decoding="async"
               />
               <div class="scene-wash"></div>
               <div class="scene-copy">
-                <p class="eyebrow"><span></span> CONTACTO HOSTIL // LOCUST</p>
+                <p class="eyebrow"><span></span> CONTACTO HOSTIL // LOCUST // ARTE E-DAY</p>
                 <h2 id="scene-locust-title">BAJO TIERRA.<br /><em>EN TODAS PARTES.</em></h2>
                 <p>No conocen el miedo. No negocian. Y no dejarán de venir.</p>
                 <span class="scene-tag">AMENAZA: EXTINCIÓN</span>
@@ -225,45 +241,42 @@ const artwork = {
               <img
                 class="scene-image"
                 src={artwork.squad}
-                alt="Delta Squad: Marcus Fenix, Dominic Santiago, Augustus Cole y Damon Baird"
-                width="1024"
-                height="576"
-                loading="lazy"
+                alt="Soldados del escuadrón Bravo en arte promocional oficial de Gears of War: E-Day"
+                width="2048"
+                height="1152"
+                loading="eager"
                 decoding="async"
               />
               <div class="scene-wash"></div>
               <div class="scene-copy">
-                <p class="eyebrow"><span></span> CGO // ESCUADRÓN DELTA</p>
-                <h2 id="scene-squad-title">CUATRO SOLDADOS.<br /><em>UNA HUMANIDAD.</em></h2>
-                <p>Fenix. Santiago. Cole. Baird. Cuando cae el mundo, nadie lucha solo.</p>
-                <div class="squad-roster" aria-label="Integrantes de Delta Squad">
-                  <span>MARCUS FENIX</span><span>DOM SANTIAGO</span>
-                  <span>AUGUSTUS COLE</span><span>DAMON BAIRD</span>
-                </div>
+                <p class="eyebrow"><span></span> GEARS OF WAR: E-DAY // ESCUADRÓN BRAVO</p>
+                <h2 id="scene-squad-title">CUANDO TODO<br /><em>SE DERRUMBA.</em></h2>
+                <p>En la víspera de la Emergencia, el escuadrón Bravo se prepara para defender su hogar.</p>
+                <span class="scene-tag">ARTE PROMOCIONAL E-DAY // UNIDAD BRAVO</span>
               </div>
-              <span class="scene-coordinate" aria-hidden="true">SQUAD STATUS // READY</span>
+              <span class="scene-coordinate" aria-hidden="true">BRAVO SQUAD // READY</span>
             </article>
             <article
               class="sequence-scene scene-arsenal"
               data-scene="04"
-              data-visual="armory"
+              data-visual="containment"
               aria-labelledby="scene-arsenal-title"
             >
               <img
                 class="scene-image"
-                src={artwork.lancer}
-                alt="Marcus Fenix armado con un rifle de asalto Lancer"
-                width="1024"
-                height="576"
-                loading="lazy"
+                src={artwork.combat}
+                alt="Un Drone Locust forcejea con un soldado en una imagen promocional de Gears of War: E-Day"
+                width="2048"
+                height="1152"
+                loading="eager"
                 decoding="async"
               />
               <div class="scene-wash"></div>
               <div class="scene-copy">
-                <p class="eyebrow"><span></span> CGO // ARMAMENTO ESTÁNDAR</p>
-                <h2 id="scene-arsenal-title">UN LANCER.<br /><em>ÚLTIMA PALABRA.</em></h2>
-                <p>Acero, pólvora y una bayoneta sierra. El sonido de Sera resistiendo.</p>
-                <span class="scene-tag">MK 2 LANCER // LISTO PARA EL COMBATE</span>
+                <p class="eyebrow"><span></span> CONTACTO HOSTIL // CONTENCIÓN</p>
+                <h2 id="scene-arsenal-title">NO VIENEN<br /><em>DE UNO EN UNO.</em></h2>
+                <p>En el Día de la Emergencia, cada contacto puede convertirse en una lucha por sobrevivir.</p>
+                <span class="scene-tag">AMENAZA ACTIVA // MANTENER LA LÍNEA</span>
               </div>
               <span class="scene-coordinate" aria-hidden="true">MANTENER POSICIÓN // RECARGAR</span>
             </article>
@@ -275,11 +288,11 @@ const artwork = {
             >
               <img
                 class="scene-image"
-                src={artwork.ruins}
-                alt="Ruinas y fortificaciones en el planeta Sera"
+                src={artwork.estate}
+                alt="La finca Fenix en una captura promocional oficial de Gears of War: Reloaded"
                 width="1024"
                 height="576"
-                loading="lazy"
+                loading="eager"
                 decoding="async"
               />
               <div class="scene-wash"></div>
@@ -300,10 +313,10 @@ const artwork = {
               <img
                 class="scene-image"
                 src={artwork.finale}
-                alt="Delta Squad listo para la última misión"
+                alt="Captura promocional oficial de Gears of War: Reloaded"
                 width="1024"
                 height="576"
-                loading="lazy"
+                loading="eager"
                 decoding="async"
               />
               <div class="scene-wash"></div>
@@ -332,15 +345,17 @@ const artwork = {
 
         <section class="character-section" id="personajes" aria-labelledby="characters-title">
           <header class="editorial-heading section-wrap reveal">
-            <p class="eyebrow"><span></span> CGO // ARCHIVO DEL ESCUADRÓN</p>
+            <p class="eyebrow"><span></span> ARCHIVO VISUAL // GEARS OF WAR</p>
             <h2 id="characters-title">LOS QUE<br /><em>NO CEDEN.</em></h2>
             <p>
-              No son leyendas porque no tengan miedo. Lo son porque siguen avanzando juntos.
+              Retratos promocionales de Marcus y Dom en E-Day, junto al Escuadrón Delta y sus
+              enemigos en Gears of War. Las imágenes de E-Day no ilustran la campaña original.
             </p>
           </header>
 
           <div class="character-track" data-editorial-track>
             <div class="character-stage" data-editorial-stage>
+              <canvas class="local-atmosphere" data-atmosphere="characters" aria-hidden="true"></canvas>
               <article
                 class="editorial-panel character-panel"
                 data-editorial-slide
@@ -349,10 +364,10 @@ const artwork = {
               >
                 <img
                   class="editorial-image"
-                  src={artwork.hero}
-                  alt="Marcus Fenix y Dominic Santiago en el arte local del hero, frente a las ruinas de Sera"
-                  width="1024"
-                  height="487"
+                  src={artwork.characterMarcus}
+                  alt="Marcus Fenix en arte promocional oficial de Gears of War: E-Day"
+                  width="2048"
+                  height="1152"
                   loading="lazy"
                   decoding="async"
                 />
@@ -361,11 +376,10 @@ const artwork = {
                   <p class="eyebrow"><span></span> SOLDADO // COG</p>
                   <h3 id="character-marcus-title">MARCUS<br /><em>FENIX.</em></h3>
                   <p>
-                    Un veterano endurecido que regresa al servicio cuando la humanidad está al
-                    borde del colapso. Al frente de Delta, su instinto de supervivencia se convierte
-                    en el centro de una misión imposible.
+                    Un soldado de la CGO cuyo temple y voluntad de resistir lo convierten en una
+                    figura central para quienes luchan junto a él.
                   </p>
-                  <span class="editorial-caption">ARCHIVO VISUAL // MARCUS Y DOM EN SERA</span>
+                  <span class="editorial-caption">ARTE PROMOCIONAL OFICIAL // GEARS OF WAR: E-DAY</span>
                 </div>
                 <span class="editorial-coordinate">01 // EL LÍDER</span>
               </article>
@@ -379,23 +393,22 @@ const artwork = {
               >
                 <img
                   class="editorial-image"
-                  src={artwork.squad}
-                  alt="Dominic Santiago y Delta en una captura promocional oficial de campaña"
-                  width="1024"
-                  height="576"
+                  src={artwork.characterDom}
+                  alt="Dominic Santiago en arte promocional oficial de Gears of War: E-Day"
+                  width="2048"
+                  height="1152"
                   loading="lazy"
                   decoding="async"
                 />
                 <div class="editorial-wash"></div>
                 <div class="editorial-copy">
-                  <p class="eyebrow"><span></span> SOLDADO // DELTA</p>
+                  <p class="eyebrow"><span></span> SOLDADO // CGO</p>
                   <h3 id="character-dom-title">DOMINIC<br /><em>SANTIAGO.</em></h3>
                   <p>
-                    Leal, cercano a Marcus desde antes de la guerra y siempre dispuesto a cubrirle
-                    la espalda. Dom es el vínculo humano que mantiene unido al escuadrón en medio
-                    del combate.
+                    Leal y decidido, Dom lucha por proteger a los suyos. Su amistad con Marcus
+                    precede a la guerra y sostiene a ambos en los momentos más oscuros.
                   </p>
-                  <span class="editorial-caption">ARCHIVO VISUAL // HERMANOS DE ARMAS</span>
+                  <span class="editorial-caption">ARTE PROMOCIONAL OFICIAL // GEARS OF WAR: E-DAY</span>
                 </div>
                 <span class="editorial-coordinate">02 // EL COMPAÑERO</span>
               </article>
@@ -403,14 +416,14 @@ const artwork = {
               <article
                 class="editorial-panel character-panel"
                 data-editorial-slide
-                data-visual="thrashball"
-                aria-labelledby="character-cole-title"
+                data-visual="brotherhood"
+                aria-labelledby="character-delta-title"
                 aria-hidden="true"
               >
                 <img
                   class="editorial-image"
-                  src={artwork.squad}
-                  alt="Imagen promocional oficial del Escuadrón Delta reunido"
+                  src={artwork.characterDelta}
+                  alt="Marcus Fenix, Dominic Santiago, Augustus Cole y Damon Baird en una imagen promocional oficial de Gears of War"
                   width="1024"
                   height="576"
                   loading="lazy"
@@ -418,76 +431,15 @@ const artwork = {
                 />
                 <div class="editorial-wash"></div>
                 <div class="editorial-copy">
-                  <p class="eyebrow"><span></span> SOLDADO // DELTA</p>
-                  <h3 id="character-cole-title">AUGUSTUS<br /><em>COLE.</em></h3>
+                  <p class="eyebrow"><span></span> CGO // ESCUADRÓN DELTA</p>
+                  <h3 id="character-delta-title">NADIE<br /><em>LUCHA SOLO.</em></h3>
                   <p>
-                    Cole Train aporta energía y fuerza a Delta. Antes de combatir por la CGO fue
-                    una estrella del thrashball; su espíritu competitivo sigue vivo incluso en la
-                    batalla.
+                    Marcus, Dom, Cole y Baird: cuatro soldados con habilidades distintas, unidos
+                    por la confianza que exige cada misión.
                   </p>
-                  <span class="editorial-caption">ARCHIVO VISUAL // ESCUADRÓN DELTA</span>
+                  <span class="editorial-caption">IMAGEN PROMOCIONAL OFICIAL // GEARS OF WAR</span>
                 </div>
-                <span class="editorial-coordinate">03 // COLE TRAIN</span>
-              </article>
-
-              <article
-                class="editorial-panel character-panel"
-                data-editorial-slide
-                data-visual="tactician"
-                aria-labelledby="character-baird-title"
-                aria-hidden="true"
-              >
-                <img
-                  class="editorial-image"
-                  src={artwork.squad}
-                  alt="Imagen promocional oficial del Escuadrón Delta reunido"
-                  width="1024"
-                  height="576"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div class="editorial-wash"></div>
-                <div class="editorial-copy">
-                  <p class="eyebrow"><span></span> INGENIERO // DELTA</p>
-                  <h3 id="character-baird-title">DAMON<br /><em>BAIRD.</em></h3>
-                  <p>
-                    Técnico brillante y pragmático. Su conocimiento de los sistemas de la CGO
-                    resuelve problemas que no se solucionan con fuerza bruta, aunque nunca pierda
-                    la oportunidad de lanzar una réplica.
-                  </p>
-                  <span class="editorial-caption">ARCHIVO VISUAL // ESCUADRÓN DELTA</span>
-                </div>
-                <span class="editorial-coordinate">04 // EL INGENIERO</span>
-              </article>
-
-              <article
-                class="editorial-panel character-panel"
-                data-editorial-slide
-                data-visual="command-comms"
-                aria-labelledby="character-anya-title"
-                aria-hidden="true"
-              >
-                <img
-                  class="editorial-image editorial-image--comms"
-                  src={artwork.ruins}
-                  alt="Escenario de Sera de una captura promocional oficial; Anya apoya a Delta por comunicaciones"
-                  width="1024"
-                  height="576"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div class="editorial-wash"></div>
-                <div class="editorial-copy">
-                  <p class="eyebrow"><span></span> COMUNICACIONES // CGO</p>
-                  <h3 id="character-anya-title">ANYA<br /><em>STROUD.</em></h3>
-                  <p>
-                    Desde el centro de mando, Anya mantiene el enlace entre Delta y la CGO.
-                    Inteligencia, órdenes y orientación convierten su voz en parte esencial de la
-                    operación.
-                  </p>
-                  <span class="editorial-caption">ARCHIVO DE CAMPAÑA // APOYO POR RADIO</span>
-                </div>
-                <span class="editorial-coordinate">05 // LA VOZ EN EL FRENTE</span>
+                <span class="editorial-coordinate">03 // EQUIPO DELTA</span>
               </article>
 
               <article
@@ -499,299 +451,47 @@ const artwork = {
               >
                 <img
                   class="editorial-image"
-                  src={artwork.locust}
-                  alt="Combate entre soldados de la CGO y la amenaza Locust en una imagen promocional oficial"
-                  width="1024"
-                  height="576"
+                  src={artwork.characterLocust}
+                  alt="Un Boomer Locust en arte promocional oficial de Gears of War: E-Day"
+                  width="2048"
+                  height="1152"
                   loading="lazy"
                   decoding="async"
                 />
                 <div class="editorial-wash"></div>
                 <div class="editorial-copy">
-                  <p class="eyebrow"><span></span> ENEMIGO // EL HOLLOW</p>
+                  <p class="eyebrow"><span></span> ENEMIGO // LA HORDA</p>
                   <h3 id="character-locust-title">LA HORDA<br /><em>LOCUST.</em></h3>
                   <p>
-                    Una fuerza que emerge de las profundidades y golpea a la humanidad en el Día
-                    de la Emergencia. Su avance transforma cada ciudad en una línea de defensa.
+                    Los Locust emergen de las profundidades en el Día de la Emergencia. Su fuerza
+                    convierte cada encuentro en una lucha desesperada por sobrevivir.
                   </p>
-                  <span class="editorial-caption">ARCHIVO VISUAL // CONTACTO HOSTIL</span>
+                  <span class="editorial-caption">ARTE PROMOCIONAL OFICIAL // GEARS OF WAR: E-DAY</span>
                 </div>
-                <span class="editorial-coordinate">06 // BAJO TIERRA</span>
+                <span class="editorial-coordinate">04 // BAJO TIERRA</span>
               </article>
 
               <nav class="editorial-nav" aria-label="Archivo de personajes">
                 <a href="#personajes" data-editorial-link="0" aria-label="Marcus Fenix" aria-current="step">01</a>
                 <a href="#personajes" data-editorial-link="1" aria-label="Dominic Santiago">02</a>
-                <a href="#personajes" data-editorial-link="2" aria-label="Augustus Cole">03</a>
-                <a href="#personajes" data-editorial-link="3" aria-label="Damon Baird">04</a>
-                <a href="#personajes" data-editorial-link="4" aria-label="Anya Stroud">05</a>
-                <a href="#personajes" data-editorial-link="5" aria-label="La Horda Locust">06</a>
+                <a href="#personajes" data-editorial-link="2" aria-label="Escuadrón Delta">03</a>
+                <a href="#personajes" data-editorial-link="3" aria-label="La Horda Locust">04</a>
               </nav>
-              <div class="editorial-counter" aria-hidden="true">
-                <span data-editorial-current>01</span><i>/</i>06
-              </div>
               <span class="editorial-hint" aria-hidden="true">DESPLÁZATE PARA CONOCERLOS</span>
             </div>
           </div>
         </section>
 
-        <section class="chronicle-section" id="historia" aria-labelledby="chronicle-title">
-          <header class="editorial-heading section-wrap reveal">
-            <p class="eyebrow"><span></span> ARCHIVOS DE LA CGO // CAMPAÑA ORIGINAL</p>
-            <h2 id="chronicle-title">EL DÍA QUE<br /><em>TODO CAMBIÓ.</em></h2>
-            <p>
-              Seis capítulos del primer Gears of War: el colapso de Sera, la misión de Delta y el
-              precio de resistir.
-            </p>
-          </header>
-
-          <details class="spoiler-disclosure">
-            <summary>
-              <span class="spoiler-mark" aria-hidden="true">!</span>
-              <span>
-                <strong>La campaña contiene spoilers</strong>
-                <small>Abre el archivo para continuar con la historia del juego original.</small>
-              </span>
-              <span class="spoiler-toggle" aria-hidden="true">+</span>
-            </summary>
-
-            <div class="chronicle-track" data-editorial-track>
-              <div class="chronicle-stage" data-editorial-stage>
-                <article
-                  class="editorial-panel chronicle-panel"
-                  data-editorial-slide
-                  data-visual="aftermath"
-                  aria-labelledby="chapter-one-title"
-                >
-                  <img
-                    class="editorial-image"
-                    src={artwork.ruins}
-                    alt="Arquitectura y fortificaciones de Sera en una captura promocional oficial"
-                    width="1024"
-                    height="576"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="editorial-wash"></div>
-                  <div class="editorial-copy">
-                    <p class="eyebrow"><span></span> CAPÍTULO 01 // ANTES DEL DÍA E</p>
-                    <h3 id="chapter-one-title">UN MUNDO<br /><em>AGOTADO.</em></h3>
-                    <p>
-                      Las Guerras del Péndulo dejaron a Sera marcada por décadas de conflicto.
-                      La Imulsión prometió energía y prosperidad, pero su valor estratégico volvió
-                      a enfrentar a las naciones por el control de un recurso decisivo.
-                    </p>
-                    <span class="editorial-caption">SERA // HERENCIA DE LAS GUERRAS HUMANAS</span>
-                  </div>
-                  <span class="editorial-coordinate">01 // EL MUNDO ANTES DE LA EMERGENCIA</span>
-                </article>
-
-                <article
-                  class="editorial-panel chronicle-panel"
-                  data-editorial-slide
-                  data-visual="breach"
-                  aria-labelledby="chapter-two-title"
-                  aria-hidden="true"
-                >
-                  <img
-                    class="editorial-image"
-                    src={artwork.locust}
-                    alt="Combate entre tropas de la CGO y Locust en una imagen promocional oficial"
-                    width="1024"
-                    height="576"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="editorial-wash"></div>
-                  <div class="editorial-copy">
-                    <p class="eyebrow"><span></span> CAPÍTULO 02 // DÍA DE LA EMERGENCIA</p>
-                    <h3 id="chapter-two-title">LA TIERRA<br /><em>SE ABRIÓ.</em></h3>
-                    <p>
-                      Los Locust irrumpen desde el subsuelo y atacan asentamientos humanos por
-                      todo el planeta. En un solo día, la guerra cambia de escala y la población
-                      civil queda atrapada en el derrumbe.
-                    </p>
-                    <span class="editorial-caption">SERA // CONTACTO HOSTIL</span>
-                  </div>
-                  <span class="editorial-coordinate">02 // DÍA E</span>
-                </article>
-
-                <article
-                  class="editorial-panel chronicle-panel"
-                  data-editorial-slide
-                  data-visual="return"
-                  aria-labelledby="chapter-three-title"
-                  aria-hidden="true"
-                >
-                  <img
-                    class="editorial-image"
-                    src={artwork.hero}
-                    alt="Marcus Fenix y Dominic Santiago ante una ciudad en ruinas"
-                    width="1024"
-                    height="487"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="editorial-wash"></div>
-                  <div class="editorial-copy">
-                    <p class="eyebrow"><span></span> CAPÍTULO 03 // REGRESO AL SERVICIO</p>
-                    <h3 id="chapter-three-title">MARCUS<br /><em>VUELVE.</em></h3>
-                    <p>
-                      Años después de su encarcelamiento, Marcus Fenix recibe una nueva oportunidad
-                      de luchar. Dominic Santiago lo saca de la prisión y ambos se reincorporan a
-                      la CGO mientras la amenaza Locust avanza.
-                    </p>
-                    <span class="editorial-caption">DELTA // MARCUS Y DOMINIC</span>
-                  </div>
-                  <span class="editorial-coordinate">03 // DE VUELTA AL FRENTE</span>
-                </article>
-
-                <article
-                  class="editorial-panel chronicle-panel"
-                  data-editorial-slide
-                  data-visual="formation"
-                  aria-labelledby="chapter-four-title"
-                  aria-hidden="true"
-                >
-                  <img
-                    class="editorial-image"
-                    src={artwork.squad}
-                    alt="Imagen promocional oficial del Escuadrón Delta"
-                    width="1024"
-                    height="576"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="editorial-wash"></div>
-                  <div class="editorial-copy">
-                    <p class="eyebrow"><span></span> CAPÍTULO 04 // ESCUADRÓN DELTA</p>
-                    <h3 id="chapter-four-title">JUNTOS<br /><em>EN LA OSCURIDAD.</em></h3>
-                    <p>
-                      Marcus y Dom se unen a Cole y Baird. Guiados por Anya desde comunicaciones,
-                      Delta debe localizar la red subterránea Locust y obtener los datos necesarios
-                      para planear una respuesta.
-                    </p>
-                    <span class="editorial-caption">COG // EQUIPO DELTA EN OPERACIÓN</span>
-                  </div>
-                  <span class="editorial-coordinate">04 // NO SE DEJA A NADIE ATRÁS</span>
-                </article>
-
-                <article
-                  class="editorial-panel chronicle-panel"
-                  data-editorial-slide
-                  data-visual="objective"
-                  aria-labelledby="chapter-five-title"
-                  aria-hidden="true"
-                >
-                  <img
-                    class="editorial-image"
-                    src={artwork.lancer}
-                    alt="Marcus Fenix armado con un rifle Lancer en una captura oficial de Gears of War"
-                    width="1024"
-                    height="576"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="editorial-wash"></div>
-                  <div class="editorial-copy">
-                    <p class="eyebrow"><span></span> CAPÍTULO 05 // OPERACIÓN LIGHTMASS</p>
-                    <h3 id="chapter-five-title">EL CORAZÓN<br /><em>DEL HOLLOW.</em></h3>
-                    <p>
-                      La misión de Delta conduce a la obtención de un resonador capaz de cartografiar
-                      los túneles Locust. Esa información permite a la CGO preparar la bomba
-                      Lightmass y llevar el combate hasta el corazón de la red subterránea.
-                    </p>
-                    <span class="editorial-caption">CGO // RESONADOR Y BOMBA LIGHTMASS</span>
-                  </div>
-                  <span class="editorial-coordinate">05 // EL PLAN DE LA CGO</span>
-                </article>
-
-                <article
-                  class="editorial-panel chronicle-panel"
-                  data-editorial-slide
-                  data-visual="aftermath"
-                  aria-labelledby="chapter-six-title"
-                  aria-hidden="true"
-                >
-                  <img
-                    class="editorial-image"
-                    src={artwork.keyart}
-                    alt="Delta Squad en una captura promocional de la campaña"
-                    width="1024"
-                    height="576"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div class="editorial-wash"></div>
-                  <div class="editorial-copy">
-                    <p class="eyebrow"><span></span> CAPÍTULO 06 // EL PRECIO DE SOBREVIVIR</p>
-                    <h3 id="chapter-six-title">NO ES EL FIN.<br /><em>ES RESISTIR.</em></h3>
-                    <p>
-                      La operación alcanza su objetivo, pero no convierte la victoria en paz.
-                      Delta sobrevive a una decisión que cambia el curso de la guerra; Sera queda
-                      herida y el destino de la humanidad sigue en juego.
-                    </p>
-                    <span class="editorial-caption">SERA // LA LUCHA CONTINÚA</span>
-                  </div>
-                  <span class="editorial-coordinate">06 // DESPUÉS DE LA MISIÓN</span>
-                </article>
-
-                <nav class="editorial-nav" aria-label="Capítulos de la historia">
-                  <a href="#historia" data-editorial-link="0" aria-label="Capítulo 1: Un mundo agotado" aria-current="step">01</a>
-                  <a href="#historia" data-editorial-link="1" aria-label="Capítulo 2: Día de la Emergencia">02</a>
-                  <a href="#historia" data-editorial-link="2" aria-label="Capítulo 3: El regreso de Marcus">03</a>
-                  <a href="#historia" data-editorial-link="3" aria-label="Capítulo 4: Escuadrón Delta">04</a>
-                  <a href="#historia" data-editorial-link="4" aria-label="Capítulo 5: Operación Lightmass">05</a>
-                  <a href="#historia" data-editorial-link="5" aria-label="Capítulo 6: El precio de sobrevivir">06</a>
-                </nav>
-                <div class="editorial-counter" aria-hidden="true">
-                  <span data-editorial-current>01</span><i>/</i>06
-                </div>
-                <span class="editorial-hint" aria-hidden="true">DESPLÁZATE PARA AVANZAR</span>
-              </div>
-            </div>
-          </details>
-        </section>
-
-        <section class="arsenal-section" id="arsenal" aria-labelledby="arsenal-title">
-          <div class="arsenal-art">
-            <img
-              src={artwork.lancer}
-              alt="Marcus Fenix con un rifle de asalto Lancer en una captura promocional oficial de Gears of War"
-              width="1024"
-              height="576"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="arsenal-art-wash"></div>
-            <span class="arsenal-index" aria-hidden="true">MK II // COG</span>
-          </div>
-          <div class="arsenal-copy section-wrap reveal">
-            <p class="eyebrow"><span></span> ARSENAL DE LA CGO // GEAR UP</p>
-            <h2 id="arsenal-title">ACERO<br />CONTRA <em>OSCURIDAD.</em></h2>
-            <div class="arsenal-feature">
-              <span class="arsenal-number">01</span>
-              <div>
-                <h3>LANCER</h3>
-                <p>
-                  El rifle de asalto estándar de la CGO y emblema de Delta. Su bayoneta sierra
-                  convierte el combate cercano en una última línea de defensa.
-                </p>
-              </div>
-            </div>
-            <div class="arsenal-detail">
-              <span>RIFLE DE ASALTO</span>
-              <span>BAYONETA SIERRA</span>
-              <span>CGO // EQUIPO DE INFANTERÍA</span>
-            </div>
-            <p class="arsenal-note">
-              Imagen promocional oficial del juego; no se presenta como modelo 3D interactivo.
-            </p>
-          </div>
-        </section>
+        <ArmorySection />
+        <ThreatDatabaseSection />
 
         <section class="aftermath" aria-labelledby="aftermath-title">
-          <div class="aftermath-art" aria-hidden="true"></div>
+          <canvas class="local-atmosphere" data-atmosphere="aftermath" aria-hidden="true"></canvas>
+          <div
+            class="aftermath-art"
+            style={`--aftermath-art: url("${artwork.closing}")`}
+            aria-hidden="true"
+          ></div>
           <div class="aftermath-copy section-wrap reveal">
             <p class="eyebrow"><span></span> POR LOS CAÍDOS. POR LOS QUE QUEDAN.</p>
             <h2 id="aftermath-title">LA GUERRA NO<br />TERMINA <em>AQUÍ.</em></h2>
@@ -805,22 +505,43 @@ const artwork = {
       </main>
 
       <footer class="footer">
-        <a class="brand footer-brand" href="#inicio" aria-label="Volver al inicio">
-          <span class="brand-mark">
-            <img src="/images/gears-cog.png" alt="" width="332" height="400" />
+        <div class="footer-main section-wrap">
+          <div class="footer-identity">
+            <a class="brand footer-brand" href="#inicio" aria-label="Volver al inicio">
+              <span class="brand-mark">
+                <img src="/images/gears-cog.png" alt="" width="332" height="400" />
+              </span>
+              <span class="brand-copy">GEARS<span>OF WAR</span></span>
+            </a>
+            <p class="footer-mission">ESTO ES SERA.<br /><strong>NO HAY VUELTA ATRÁS.</strong></p>
+            <p class="footer-description">
+              Un archivo visual hecho por fans en honor a la trilogía clásica de Gears of War.
+            </p>
+          </div>
+          <nav class="footer-explore" aria-label="Explorar la experiencia">
+            <span class="footer-label">EXPLORACIÓN</span>
+            <a href="#guerra">La guerra</a>
+            <a href="#personajes">Escuadrón Delta</a>
+            <a href="#armory">Arsenal</a>
+            <a href="#threat-database">Base de amenazas</a>
+          </nav>
+          <div class="footer-outbound">
+            <span class="footer-label">TRANSMISIÓN EXTERNA</span>
+            <a
+              class="footer-official"
+              href="https://www.gearsofwar.com/en-us/games/gears-of-war/"
+              target="_blank"
+              rel="noreferrer"
+            >GEARS OF WAR OFICIAL <span class="interface-icon"><ArrowIcon /></span></a>
+            <span class="footer-signal"><i></i> CANAL CGO // ACTIVO</span>
+          </div>
+        </div>
+        <div class="footer-bottom section-wrap">
+          <span class="footer-legal">
+            Proyecto fan no oficial · Arte promocional © Xbox / The Coalition. Gears of War es una marca de sus respectivos propietarios.
           </span>
-          <span class="brand-copy">GEARS<span>OF WAR</span></span>
-        </a>
-        <p>ESTO ES SERA. <span>NO HAY VUELTA ATRÁS.</span></p>
-        <a
-          class="footer-official"
-          href="https://www.gearsofwar.com/en-us/games/gears-of-war/"
-          target="_blank"
-          rel="noreferrer"
-        >GEARS OF WAR OFICIAL <span class="interface-icon"><ArrowIcon /></span></a>
-        <span class="footer-legal">
-          Proyecto fan no oficial · Imágenes de campaña: Xbox / The Coalition · Hero aportado por el usuario.
-        </span>
+          <a href="#inicio">VOLVER AL FRENTE <span aria-hidden="true">↑</span></a>
+        </div>
       </footer>
     </div>
     <script>

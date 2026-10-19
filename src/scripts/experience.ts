@@ -1,6 +1,7 @@
 import { inView } from "motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import "./catalog";
 
 gsap.registerPlugin(ScrollTrigger);
 document.documentElement.classList.add("js");
@@ -10,9 +11,7 @@ const scenes = [...document.querySelectorAll<HTMLElement>(".sequence-scene")];
 const sequence = document.querySelector<HTMLElement>(".war-sequence");
 const frame = document.querySelector<HTMLElement>(".sequence-frame");
 const sceneLinks = [...document.querySelectorAll<HTMLAnchorElement>("[data-scene-link]")];
-const currentSceneLabel = document.querySelector<HTMLElement>(".sequence-current");
 const sceneProgress = document.querySelector<HTMLElement>(".sequence-progress-fill");
-let sceneProgressValue = 0;
 
 type VisualTreatment = {
   imageInset: string;
@@ -22,6 +21,21 @@ type VisualTreatment = {
   origin: string;
   copyFrom: { x: number; y: number; scale: number };
   copyExit: { x: number; y: number };
+};
+
+type ImageTweenFrame = {
+  clipPath?: string;
+  scale: number;
+  xPercent: number;
+  yPercent: number;
+  rotation?: number;
+  filter?: string;
+  transformOrigin?: string;
+};
+
+type ImageMotion = {
+  from: ImageTweenFrame;
+  to: ImageTweenFrame;
 };
 
 const visualTreatments: Record<string, VisualTreatment> = {
@@ -133,37 +147,168 @@ const visualTreatments: Record<string, VisualTreatment> = {
     copyFrom: { x: 30, y: 8, scale: 0.96 },
     copyExit: { x: 28, y: 0 },
   },
-  aftermath: {
-    imageInset: "inset(0 0 18% 0)",
-    scale: 1.14,
-    xPercent: 0,
-    yPercent: 1,
-    origin: "50% 58%",
-    copyFrom: { x: 0, y: 30, scale: 0.98 },
-    copyExit: { x: 0, y: -18 },
-  },
-  return: {
-    imageInset: "inset(0 70% 0 0)",
-    scale: 1.15,
-    xPercent: -1,
-    yPercent: 0,
-    origin: "40% 50%",
-    copyFrom: { x: -34, y: 0, scale: 1 },
-    copyExit: { x: 0, y: -16 },
-  },
-  objective: {
-    imageInset: "inset(18% 0 0 0)",
-    scale: 1.13,
-    xPercent: 1,
-    yPercent: 0,
-    origin: "65% 42%",
-    copyFrom: { x: 0, y: 26, scale: 0.98 },
-    copyExit: { x: 16, y: 0 },
-  },
 };
 
 const getVisualTreatment = (element: HTMLElement) =>
   visualTreatments[element.dataset.visual ?? ""] ?? visualTreatments.panorama;
+
+const imageMotions: Record<string, ImageMotion> = {
+  panorama: {
+    from: { clipPath: "inset(0 28% 0 0)", scale: 1.18, xPercent: -2, yPercent: 1 },
+    to: { clipPath: "inset(0 0 0 0)", scale: 1.025, xPercent: 0, yPercent: 0 },
+  },
+  breach: {
+    from: {
+      clipPath: "inset(0 0 0 100%)",
+      scale: 1.1,
+      xPercent: 3,
+      yPercent: 0,
+    },
+    to: {
+      clipPath: "inset(0 0 0 0)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+    },
+  },
+  formation: {
+    from: { clipPath: "inset(100% 0 0 0)", scale: 1.12, xPercent: 0, yPercent: 4 },
+    to: { clipPath: "inset(0 0 0 0)", scale: 1.025, xPercent: 0, yPercent: 0 },
+  },
+  containment: {
+    from: {
+      clipPath: "circle(0% at 72% 50%)",
+      scale: 1.12,
+      xPercent: -1,
+      yPercent: 0,
+      transformOrigin: "72% 50%",
+    },
+    to: {
+      clipPath: "circle(140% at 72% 50%)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+    },
+  },
+  armory: {
+    from: {
+      clipPath: "circle(0% at 70% 46%)",
+      scale: 1.12,
+      xPercent: -1,
+      yPercent: 0,
+      transformOrigin: "70% 46%",
+    },
+    to: {
+      clipPath: "circle(120% at 70% 46%)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+    },
+  },
+  ashfall: {
+    from: {
+      scale: 1.14,
+      xPercent: 1,
+      yPercent: -1,
+      filter: "blur(12px) brightness(0.56)",
+    },
+    to: { scale: 1.025, xPercent: 0, yPercent: 0, filter: "blur(0px) brightness(1)" },
+  },
+  "last-stand": {
+    from: { clipPath: "inset(0 0 100% 0)", scale: 1.1, xPercent: 0, yPercent: -2 },
+    to: { clipPath: "inset(0 0 0 0)", scale: 1.025, xPercent: 0, yPercent: 0 },
+  },
+  command: {
+    from: {
+      clipPath: "inset(0 0 0 100%)",
+      scale: 1.14,
+      xPercent: 2,
+      yPercent: 0,
+      transformOrigin: "62% 45%",
+    },
+    to: { clipPath: "inset(0 0 0 0)", scale: 1.025, xPercent: 0, yPercent: 0 },
+  },
+  brotherhood: {
+    from: {
+      scale: 1.34,
+      xPercent: 5,
+      yPercent: 3,
+      filter: "saturate(0.62) brightness(0.74)",
+    },
+    to: { scale: 1.04, xPercent: -2, yPercent: -1, filter: "saturate(0.88) brightness(1)" },
+  },
+  thrashball: {
+    from: {
+      clipPath: "circle(0% at 18% 62%)",
+      scale: 1.12,
+      xPercent: 0,
+      yPercent: 1,
+      transformOrigin: "18% 62%",
+    },
+    to: {
+      clipPath: "circle(135% at 18% 62%)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+    },
+  },
+  tactician: {
+    from: {
+      clipPath: "polygon(0 0, 100% 0, 0 0, 0 100%)",
+      scale: 1.13,
+      xPercent: -1,
+      yPercent: 0,
+    },
+    to: {
+      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+    },
+  },
+  "command-comms": {
+    from: {
+      clipPath: "ellipse(0% 50% at 50% 50%)",
+      scale: 1.08,
+      xPercent: 0,
+      yPercent: 0,
+      filter: "brightness(0.68) saturate(0.58)",
+    },
+    to: {
+      clipPath: "ellipse(100% 100% at 50% 50%)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+      filter: "brightness(1) saturate(0.88)",
+    },
+  },
+  horde: {
+    from: {
+      clipPath: "polygon(0 0, 0 0, 0 100%, 0 100%)",
+      scale: 1.2,
+      xPercent: -2,
+      yPercent: 0,
+    },
+    to: {
+      clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+      scale: 1.025,
+      xPercent: 0,
+      yPercent: 0,
+    },
+  },
+};
+
+const getImageMotion = (element: HTMLElement, treatment: VisualTreatment): ImageMotion =>
+  imageMotions[element.dataset.visual ?? ""] ?? {
+    from: {
+      clipPath: treatment.imageInset,
+      scale: treatment.scale,
+      xPercent: treatment.xPercent,
+      yPercent: treatment.yPercent,
+      transformOrigin: treatment.origin,
+    },
+    to: { clipPath: "inset(0 0 0 0)", scale: 1.025, xPercent: 0, yPercent: 0 },
+  };
 
 const setActiveScene = (index: number, hideInactive = true) => {
   scenes.forEach((scene, sceneIndex) => {
@@ -182,9 +327,6 @@ const setActiveScene = (index: number, hideInactive = true) => {
     }
   });
 
-  if (currentSceneLabel) {
-    currentSceneLabel.textContent = String(index + 1).padStart(2, "0");
-  }
 };
 
 const refreshScrollPositions = () => {
@@ -193,6 +335,98 @@ const refreshScrollPositions = () => {
   } else {
     window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
   }
+};
+
+const splitKineticHeading = (heading: HTMLElement) => {
+  if (heading.dataset.kineticSplit === "true") return;
+
+  heading.dataset.kineticSplit = "true";
+  heading.setAttribute("aria-label", heading.textContent?.replace(/\s+/gu, " ").trim() ?? "");
+  const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
+  const textNodes: Text[] = [];
+
+  while (walker.nextNode()) {
+    if (walker.currentNode.textContent?.trim()) {
+      textNodes.push(walker.currentNode as Text);
+    }
+  }
+
+  textNodes.forEach((textNode) => {
+    const fragment = document.createDocumentFragment();
+    const segments = textNode.textContent?.match(/\s+|[^\s]+/gu) ?? [];
+
+    segments.forEach((segment) => {
+      if (/^\s+$/u.test(segment)) {
+        fragment.append(document.createTextNode(segment));
+        return;
+      }
+
+      const word = document.createElement("span");
+      word.className = "kinetic-word";
+      word.setAttribute("aria-hidden", "true");
+      Array.from(segment).forEach((character) => {
+        const letter = document.createElement("span");
+        letter.className = "kinetic-char";
+        letter.textContent = character;
+        word.append(letter);
+      });
+      fragment.append(word);
+    });
+
+    textNode.replaceWith(fragment);
+  });
+};
+
+const kineticHeadings = [
+  ...document.querySelectorAll<HTMLElement>(
+    ".hero h1, .sequence-scene h2, .editorial-heading h2, .editorial-panel h3, .arsenal-copy h2, .aftermath h2",
+  ),
+];
+kineticHeadings.forEach(splitKineticHeading);
+
+const sceneTitleReveals: Record<string, { from: gsap.TweenVars; to: string; duration: number }> = {
+  panorama: {
+    from: { clipPath: "inset(0 100% 0 0)", xPercent: -4, filter: "brightness(0.55)" },
+    to: "inset(0 0 0 0)",
+    duration: 0.42,
+  },
+  breach: {
+    from: {
+      clipPath: "inset(0 0 0 100%)",
+      xPercent: 3,
+    },
+    to: "inset(0 0 0 0)",
+    duration: 0.36,
+  },
+  formation: {
+    from: { clipPath: "inset(100% 0 0 0)", yPercent: 12 },
+    to: "inset(0 0 0 0)",
+    duration: 0.4,
+  },
+  containment: {
+    from: { clipPath: "circle(0% at 72% 50%)", scale: 1.06 },
+    to: "circle(140% at 72% 50%)",
+    duration: 0.46,
+  },
+  ashfall: {
+    from: {
+      clipPath: "polygon(0 0, 100% 0, 72% 100%, 0 100%)",
+      xPercent: -3,
+    },
+    to: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+    duration: 0.4,
+  },
+  "last-stand": {
+    from: { clipPath: "inset(0 0 100% 0)", yPercent: -10, filter: "blur(8px)" },
+    to: "inset(0 0 0 0)",
+    duration: 0.48,
+  },
+};
+
+const editorialTitleMasks: Record<string, string> = {
+  command: "inset(0 100% 0 0)",
+  brotherhood: "polygon(0 0, 100% 0, 72% 100%, 0 100%)",
+  horde: "inset(100% 0 0 0)",
 };
 
 let viewportRefreshTimer = 0;
@@ -221,6 +455,35 @@ if (reducedMotion) {
     );
   }
 
+  document
+    .querySelectorAll<HTMLElement>(
+      ".editorial-heading h2, .arsenal-copy h2, .aftermath h2",
+    )
+    .forEach((heading, index) => {
+      const revealFrames = [
+        { clipPath: "inset(0 0 100% 0)", y: 24 },
+        { clipPath: "inset(0 100% 0 0)", x: -24 },
+        { clipPath: "polygon(0 0, 100% 0, 72% 100%, 0 100%)", y: 0 },
+      ];
+      const frame = revealFrames[index % revealFrames.length];
+      gsap.fromTo(
+        heading,
+        frame,
+        {
+          clipPath: "inset(0)",
+          x: 0,
+          y: 0,
+          duration: 0.82,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: heading,
+            start: "top 82%",
+            once: true,
+          },
+        },
+      );
+    });
+
   const heroReveal = gsap.timeline({ delay: 0.12 });
   heroReveal.fromTo(
     ".hero-art > img",
@@ -240,14 +503,17 @@ if (reducedMotion) {
     { autoAlpha: 1, x: 0, duration: 0.6, ease: "power3.out" },
     0.06,
   );
+  const heroTitleCharacters = document.querySelectorAll<HTMLElement>(".hero h1 .kinetic-char");
   heroReveal.fromTo(
-    ".hero h1",
-    { autoAlpha: 0, clipPath: "inset(0 100% 0 0)", x: -14 },
+    heroTitleCharacters,
+    { autoAlpha: 0, yPercent: 115, rotateX: -18, filter: "blur(5px)" },
     {
       autoAlpha: 1,
-      clipPath: "inset(0 0 0 0)",
-      x: 0,
-      duration: 0.8,
+      yPercent: 0,
+      rotateX: 0,
+      filter: "blur(0px)",
+      duration: 0.56,
+      stagger: 0.018,
       ease: "power3.out",
     },
     0.16,
@@ -302,6 +568,44 @@ if (reducedMotion) {
       scrub: true,
     },
   });
+
+  const arsenal = document.querySelector<HTMLElement>(".arsenal-section");
+  if (arsenal) {
+    gsap.fromTo(
+      ".arsenal-art img",
+      { scale: 1.16, xPercent: 2 },
+      {
+        scale: 1.03,
+        xPercent: -1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: arsenal,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.7,
+        },
+      },
+    );
+  }
+
+  const finale = document.querySelector<HTMLElement>(".aftermath");
+  if (finale) {
+    gsap.fromTo(
+      ".aftermath-art",
+      { scale: 1.12, yPercent: -3 },
+      {
+        scale: 1.04,
+        yPercent: 4,
+        ease: "none",
+        scrollTrigger: {
+          trigger: finale,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.8,
+        },
+      },
+    );
+  }
 }
 
 const primaryNavLinks = [
@@ -313,19 +617,6 @@ const navSectionIds = [...new Set(primaryNavLinks.map((link) => link.hash.slice(
 const navSections = navSectionIds
   .map((sectionId) => document.getElementById(sectionId))
   .filter((section): section is HTMLElement => section instanceof HTMLElement);
-const atmosphereRanges = new Map<string, readonly [number, number]>([
-  ["inicio", [0, 0.15]],
-  ["guerra", [0.15, 0.35]],
-  ["personajes", [0.36, 0.56]],
-  ["historia", [0.57, 0.78]],
-  ["arsenal", [0.8, 0.9]],
-]);
-const atmosphereSections = [
-  ...document.querySelectorAll<HTMLElement>(
-    ".hero, .war-sequence, .character-section, .chronicle-section, .arsenal-section, .aftermath",
-  ),
-];
-
 const updatePrimaryNavigation = () => {
   const activeLine = Math.min(window.innerHeight * 0.35, 190);
   const activeSection = navSections.find((section) => {
@@ -341,27 +632,6 @@ const updatePrimaryNavigation = () => {
     }
   });
 
-  const atmosphereSection = atmosphereSections.find((section) => {
-    const bounds = section.getBoundingClientRect();
-    return bounds.top <= activeLine && bounds.bottom > activeLine;
-  });
-
-  if (atmosphereSection) {
-    const [start, end] = atmosphereRanges.get(atmosphereSection.id || atmosphereSection.classList[0]) ?? [
-      0.9,
-      1,
-    ];
-    const bounds = atmosphereSection.getBoundingClientRect();
-    const progress = Math.min(
-      1,
-      Math.max(0, (activeLine - bounds.top) / Math.max(bounds.height, 1)),
-    );
-    sceneProgressValue = start + (end - start) * progress;
-  } else if (window.scrollY < 40) {
-    sceneProgressValue = 0;
-  } else if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2) {
-    sceneProgressValue = 1;
-  }
 };
 
 let navigationUpdateFrame = 0;
@@ -399,32 +669,26 @@ if (!reducedMotion && sequence && frame && scenes.length > 0) {
         scrub: 0.65,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          setActiveScene(Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length)));
-        },
+        onUpdate: (self) =>
+          setActiveScene(Math.min(scenes.length - 1, Math.floor(self.progress * scenes.length))),
       },
     });
 
     scenes.forEach((scene, index) => {
       const image = scene.querySelector(".scene-image");
       const copy = scene.querySelector(".scene-copy");
+      const title = scene.querySelector<HTMLElement>(".scene-copy h2");
       const treatment = getVisualTreatment(scene);
 
       if (image) {
+        const motion = getImageMotion(scene, treatment);
+        // Keep campaign art visible throughout the scrub; the title carries the reveal.
         timeline.fromTo(
           image,
+          { ...motion.from, clipPath: "inset(0)" },
           {
-            clipPath: treatment.imageInset,
-            scale: treatment.scale,
-            xPercent: treatment.xPercent,
-            yPercent: treatment.yPercent,
-            transformOrigin: treatment.origin,
-          },
-          {
-            clipPath: "inset(0 0 0 0)",
-            scale: 1.025,
-            xPercent: 0,
-            yPercent: 0,
+            ...motion.to,
+            clipPath: "inset(0)",
             duration: 1,
             ease: "none",
           },
@@ -454,6 +718,24 @@ if (!reducedMotion && sequence && frame && scenes.length > 0) {
             index + 0.82,
           );
         }
+      }
+
+      if (title) {
+        const reveal = sceneTitleReveals[scene.dataset.visual ?? "panorama"];
+        timeline.fromTo(
+          title,
+          reveal.from,
+          {
+            clipPath: reveal.to,
+            xPercent: 0,
+            yPercent: 0,
+            scale: 1,
+            filter: "blur(0px) brightness(1)",
+            duration: reveal.duration,
+            ease: "power3.out",
+          },
+          index + 0.12,
+        );
       }
 
       if (index < scenes.length - 1) {
@@ -508,6 +790,7 @@ if (!reducedMotion && sequence && frame && scenes.length > 0) {
     setActiveScene(0, false);
     scenes.forEach((scene, index) => {
       const copy = scene.querySelector(".scene-copy");
+      const title = scene.querySelector<HTMLElement>(".scene-copy h2");
       if (copy) {
         gsap.fromTo(
           copy,
@@ -517,6 +800,28 @@ if (!reducedMotion && sequence && frame && scenes.length > 0) {
             y: 0,
             duration: 0.65,
             ease: "power2.out",
+            scrollTrigger: {
+              trigger: scene,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+          },
+        );
+      }
+
+      if (title) {
+        const reveal = sceneTitleReveals[scene.dataset.visual ?? "panorama"];
+        gsap.fromTo(
+          title,
+          reveal.from,
+          {
+            clipPath: reveal.to,
+            xPercent: 0,
+            yPercent: 0,
+            scale: 1,
+            filter: "blur(0px) brightness(1)",
+            duration: reveal.duration,
+            ease: "power3.out",
             scrollTrigger: {
               trigger: scene,
               start: "top 70%",
@@ -545,7 +850,6 @@ type EditorialSequenceOptions = {
   stage: HTMLElement;
   slides: HTMLElement[];
   links: HTMLAnchorElement[];
-  currentLabel: HTMLElement | null;
 };
 
 const setupEditorialSequence = ({
@@ -553,7 +857,6 @@ const setupEditorialSequence = ({
   stage,
   slides,
   links,
-  currentLabel,
 }: EditorialSequenceOptions) => {
   const setActive = (index: number, hideInactive: boolean) => {
     slides.forEach((slide, slideIndex) => {
@@ -572,9 +875,6 @@ const setupEditorialSequence = ({
       }
     });
 
-    if (currentLabel) {
-      currentLabel.textContent = String(index + 1).padStart(2, "0");
-    }
   };
 
   if (reducedMotion) {
@@ -603,13 +903,19 @@ const setupEditorialSequence = ({
   editorialMedia.add(
     "(min-width: 761px) and (prefers-reduced-motion: no-preference)",
     () => {
+      const isCharacterSequence = track.closest(".character-section") !== null;
+      const characterOutroDuration = 0.5;
       setActive(0, true);
-      gsap.set(slides, { autoAlpha: 0 });
+      gsap.set(slides, {
+        autoAlpha: isCharacterSequence ? 1 : 0,
+        ...(isCharacterSequence ? { position: "relative", width: "100vw", flex: "0 0 100vw" } : {}),
+      });
       gsap.set(slides[0], { autoAlpha: 1 });
       slides.forEach((slide, index) => {
         gsap.set(slide.querySelector(".editorial-copy"), {
           autoAlpha: index === 0 ? 1 : 0,
-          y: index === 0 ? 0 : 28,
+          x: index === 0 ? 0 : isCharacterSequence && index % 2 === 0 ? 32 : -32,
+          y: index === 0 || isCharacterSequence ? 0 : 28,
         });
       });
 
@@ -618,97 +924,130 @@ const setupEditorialSequence = ({
           trigger: track,
           pin: stage,
           start: "top top",
-          end: () => `+=${window.innerHeight * (slides.length - 1)}`,
-          scrub: 0.6,
+          end: () =>
+            `+=${(isCharacterSequence ? window.innerWidth : window.innerHeight) * (slides.length - 1)}`,
+          scrub: isCharacterSequence ? 0.72 : 0.6,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            const [start, end] =
-              track.closest(".character-section")
-                ? ([0.36, 0.56] as const)
-                : ([0.57, 0.78] as const);
-            sceneProgressValue = start + (end - start) * self.progress;
             const sequencePosition = self.progress * (slides.length - 1);
-            const index = Math.min(
-              slides.length - 1,
-              Math.max(0, Math.floor(sequencePosition - 0.91 + 1)),
-            );
+            const index = isCharacterSequence
+              ? Math.min(slides.length - 1, Math.round(sequencePosition))
+              : Math.min(
+                  slides.length - 1,
+                  Math.max(0, Math.floor(sequencePosition - 0.91 + 1)),
+                );
             setActive(index, true);
           },
         },
       });
 
-      slides.forEach((slide, index) => {
-        const image = slide.querySelector(".editorial-image");
-        const copy = slide.querySelector(".editorial-copy");
-        const treatment = getVisualTreatment(slide);
-
-        if (image) {
-          timeline.fromTo(
-            image,
-            {
-              clipPath: treatment.imageInset,
-              scale: treatment.scale,
-              xPercent: treatment.xPercent,
-              yPercent: treatment.yPercent,
-              transformOrigin: treatment.origin,
-            },
-            {
-              clipPath: "inset(0 0 0 0)",
-              scale: 1.025,
-              xPercent: 0,
-              yPercent: 0,
-              duration: 1,
-              ease: "none",
-            },
-            index,
-          );
+      if (isCharacterSequence) {
+        const nextSectionHeading = track
+          .closest(".character-section")
+          ?.nextElementSibling?.querySelector<HTMLElement>(".editorial-heading");
+        if (nextSectionHeading) {
+          timeline.set(nextSectionHeading, { opacity: 0 }, 0);
+          timeline.set(nextSectionHeading, { opacity: 1 }, slides.length - 1);
         }
 
-        if (index === 0 && copy) {
-          timeline.fromTo(
-            copy,
-            { autoAlpha: 0, ...treatment.copyFrom },
-            {
-              autoAlpha: 1,
-              x: 0,
-              y: 0,
-              scale: 1,
-              duration: 0.28,
-              ease: "power2.out",
-            },
-            0.04,
-          );
-        }
+        gsap.set(stage, { display: "flex", width: `${slides.length * 100}vw` });
+        const sectionOverlays = stage.querySelectorAll<HTMLElement>(
+          ".editorial-nav, .editorial-hint",
+        );
+        timeline.to(
+          stage,
+          {
+            x: () => -window.innerWidth * (slides.length - 1),
+            duration: slides.length - 1 - characterOutroDuration,
+            ease: "none",
+          },
+          0,
+        );
+        timeline.to(
+          sectionOverlays,
+          {
+            x: () => window.innerWidth * (slides.length - 1),
+            duration: slides.length - 1,
+            ease: "none",
+          },
+          0,
+        );
 
-        if (index > 0) {
-          const transitionAt = index - 1 + 0.82;
-          const previous = slides[index - 1];
-          const previousCopy = previous.querySelector(".editorial-copy");
-          const previousTreatment = getVisualTreatment(previous);
+        slides.forEach((slide, index) => {
+          const image = slide.querySelector(".editorial-image");
+          const copy = slide.querySelector(".editorial-copy");
+          const title = slide.querySelector<HTMLElement>("h3");
 
-          if (previousCopy) {
-            timeline.to(
-              previousCopy,
-              {
-                autoAlpha: 0,
-                ...previousTreatment.copyExit,
-                duration: 0.17,
-                ease: "power1.in",
-              },
-              transitionAt,
+          if (image) {
+            timeline.fromTo(
+              image,
+              { scale: 1.12, xPercent: 3 },
+              { scale: 1.04, xPercent: -2, duration: 1, ease: "none" },
+              Math.min(index, slides.length - 2),
             );
           }
 
-          timeline.to(previous, { autoAlpha: 0, duration: 0.17, ease: "none" }, transitionAt);
-          timeline.fromTo(
-            slide,
-            { autoAlpha: 0 },
-            { autoAlpha: 1, duration: 0.17, ease: "none" },
-            transitionAt,
-          );
+          if (copy && index > 0) {
+            const enterAt =
+              isCharacterSequence && index === slides.length - 1 ? index - 1 : index - 0.42;
+            timeline.fromTo(
+              copy,
+              { autoAlpha: 0, x: index % 2 === 0 ? 32 : -32 },
+              { autoAlpha: 1, x: 0, duration: 0.24, ease: "power2.out" },
+              enterAt,
+            );
+          }
 
-          if (copy) {
+          if (copy && index < slides.length - 1) {
+            timeline.to(
+              copy,
+              { autoAlpha: 0, x: index % 2 === 0 ? -18 : 18, duration: 0.18, ease: "power1.in" },
+              index + 0.82,
+            );
+          }
+
+          if (title) {
+            const characters = title.querySelectorAll<HTMLElement>(".kinetic-char");
+            const titleStart = index === 0 ? 0.08 : index - 0.36;
+            timeline.fromTo(
+              characters,
+              { autoAlpha: 0, yPercent: 90, rotateX: -12 },
+              {
+                autoAlpha: 1,
+                yPercent: 0,
+                rotateX: 0,
+                duration: 0.2,
+                stagger: 0.004,
+                ease: "power3.out",
+              },
+              titleStart,
+            );
+          }
+        });
+      } else {
+        slides.forEach((slide, index) => {
+          const image = slide.querySelector(".editorial-image");
+          const copy = slide.querySelector(".editorial-copy");
+          const title = slide.querySelector<HTMLElement>("h3");
+          const treatment = getVisualTreatment(slide);
+
+          if (image) {
+            const isLastSlide = index === slides.length - 1;
+            const motion = getImageMotion(slide, treatment);
+            timeline.fromTo(
+              image,
+              motion.from,
+              {
+                ...motion.to,
+                duration: isLastSlide ? 0.18 : 1,
+                ease: "none",
+              },
+              isLastSlide ? index - 1 + 0.82 : index,
+            );
+          }
+
+          if (index === 0 && copy) {
             timeline.fromTo(
               copy,
               { autoAlpha: 0, ...treatment.copyFrom },
@@ -717,14 +1056,72 @@ const setupEditorialSequence = ({
                 x: 0,
                 y: 0,
                 scale: 1,
-                duration: 0.24,
+                duration: 0.28,
                 ease: "power2.out",
               },
-              transitionAt + 0.02,
+              0.04,
             );
           }
-        }
-      });
+
+          if (index > 0) {
+            const transitionAt = index - 1 + 0.82;
+            const previous = slides[index - 1];
+            const previousCopy = previous.querySelector(".editorial-copy");
+            const previousTreatment = getVisualTreatment(previous);
+
+            if (previousCopy) {
+              timeline.to(
+                previousCopy,
+                {
+                  autoAlpha: 0,
+                  ...previousTreatment.copyExit,
+                  duration: 0.17,
+                  ease: "power1.in",
+                },
+                transitionAt,
+              );
+            }
+
+            timeline.to(previous, { autoAlpha: 0, duration: 0.17, ease: "none" }, transitionAt);
+            timeline.fromTo(
+              slide,
+              { autoAlpha: 0 },
+              { autoAlpha: 1, duration: 0.17, ease: "none" },
+              transitionAt,
+            );
+
+            if (copy) {
+              timeline.fromTo(
+                copy,
+                { autoAlpha: 0, ...treatment.copyFrom },
+                {
+                  autoAlpha: 1,
+                  x: 0,
+                  y: 0,
+                  scale: 1,
+                  duration: index === slides.length - 1 ? 0.16 : 0.24,
+                  ease: "power2.out",
+                },
+                transitionAt + 0.02,
+              );
+            }
+          }
+
+          if (title) {
+            const titleStart = index === 0 ? 0.04 : index - 1 + 0.84;
+            timeline.fromTo(
+              title,
+              { clipPath: editorialTitleMasks[slide.dataset.visual ?? ""] ?? "inset(100% 0 0 0)" },
+              {
+                clipPath: "inset(0)",
+                duration: 0.22,
+                ease: "power3.out",
+              },
+              titleStart,
+            );
+          }
+        });
+      }
 
       const navigateToSlide = (event: MouseEvent) => {
         const link = event.currentTarget;
@@ -734,7 +1131,10 @@ const setupEditorialSequence = ({
         if (index < 0 || !trigger) return;
 
         event.preventDefault();
-        const progress = index / (slides.length - 1);
+        const progress =
+          isCharacterSequence && index === slides.length - 1
+          ? (slides.length - 1 - characterOutroDuration) / (slides.length - 1)
+            : index / (slides.length - 1);
         window.scrollTo({
           top: trigger.start + (trigger.end - trigger.start) * progress,
           behavior: "smooth",
@@ -753,9 +1153,11 @@ const setupEditorialSequence = ({
   editorialMedia.add(
     "(max-width: 760px) and (prefers-reduced-motion: no-preference)",
     () => {
+      const isCharacterSequence = track.closest(".character-section") !== null;
       setActive(0, false);
       slides.forEach((slide, index) => {
         const copy = slide.querySelector(".editorial-copy");
+        const title = slide.querySelector<HTMLElement>("h3");
         if (copy) {
           gsap.fromTo(
             copy,
@@ -772,6 +1174,45 @@ const setupEditorialSequence = ({
               },
             },
           );
+        }
+
+        if (title) {
+          if (isCharacterSequence) {
+            gsap.fromTo(
+              title.querySelectorAll<HTMLElement>(".kinetic-char"),
+              { autoAlpha: 0, yPercent: 75 },
+              {
+                autoAlpha: 1,
+                yPercent: 0,
+                duration: 0.38,
+                stagger: 0.008,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: slide,
+                  start: "top 70%",
+                  toggleActions: "play none none reverse",
+                },
+              },
+            );
+          } else {
+            gsap.fromTo(
+              title,
+              {
+                clipPath:
+                  editorialTitleMasks[slide.dataset.visual ?? ""] ?? "inset(100% 0 0 0)",
+              },
+              {
+                clipPath: "inset(0)",
+                duration: 0.46,
+                ease: "power3.out",
+                scrollTrigger: {
+                  trigger: slide,
+                  start: "top 70%",
+                  toggleActions: "play none none reverse",
+                },
+              },
+            );
+          }
         }
 
         ScrollTrigger.create({
@@ -820,7 +1261,6 @@ const initializeEditorialSequence = (root: ParentNode) => {
     stage,
     slides,
     links,
-    currentLabel: root.querySelector<HTMLElement>("[data-editorial-current]"),
   });
 };
 
@@ -829,22 +1269,6 @@ if (characterSection) {
   initializeEditorialSequence(characterSection);
 }
 
-const spoilerDisclosure = document.querySelector<HTMLDetailsElement>(".spoiler-disclosure");
-let chronicleMedia: gsap.MatchMedia | { revert: () => void } | null = null;
-
-spoilerDisclosure?.addEventListener("toggle", () => {
-  if (spoilerDisclosure.open) {
-    if (!chronicleMedia) {
-      chronicleMedia = initializeEditorialSequence(spoilerDisclosure);
-      window.requestAnimationFrame(() => ScrollTrigger.refresh());
-    }
-  } else {
-    chronicleMedia?.revert();
-    chronicleMedia = null;
-    window.requestAnimationFrame(() => ScrollTrigger.refresh());
-  }
-});
-
 const mobileMenu = document.querySelector<HTMLDetailsElement>(".mobile-menu");
 const mobileMenuSummary = mobileMenu?.querySelector<HTMLElement>("summary");
 
@@ -852,11 +1276,17 @@ mobileMenu?.addEventListener("toggle", () => {
   const isOpen = mobileMenu.open;
   mobileMenuSummary?.setAttribute("aria-expanded", String(isOpen));
   mobileMenuSummary?.setAttribute("aria-label", isOpen ? "Cerrar menú" : "Abrir menú");
+  if (isOpen) {
+    window.requestAnimationFrame(() => {
+      mobileMenu.querySelector<HTMLAnchorElement>("nav a")?.focus();
+    });
+  }
 });
 
 mobileMenu?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", () => {
     mobileMenu.open = false;
+    mobileMenuSummary?.focus();
   });
 });
 
@@ -883,26 +1313,62 @@ document.querySelectorAll<HTMLImageElement>(".hero-art img, .scene-image").forEa
   );
 });
 
-const canvas = document.querySelector<HTMLCanvasElement>("#ember-field");
+const atmosphereCanvases = [
+  ...document.querySelectorAll<HTMLCanvasElement>("[data-atmosphere]"),
+];
 
-if (canvas && !reducedMotion) {
-  const startThreeScene = async () => {
+if (atmosphereCanvases.length > 0) {
+  const startAtmospheres = async () => {
+    let createAtmosphere: typeof import("./atmosphere").createAtmosphere;
     try {
-      const { createAtmosphere } = await import("./atmosphere");
-      createAtmosphere(canvas, () => sceneProgressValue);
+      ({ createAtmosphere } = await import("./atmosphere"));
     } catch (error) {
-      canvas.hidden = true;
-      console.warn("No se pudo iniciar la atmósfera 3D; continúa el fondo estático.", error);
+      atmosphereCanvases.forEach((canvas) => {
+        canvas.hidden = true;
+      });
+      console.error("No se pudo cargar el motor local de partículas.", error);
+      return;
     }
-  };
 
-  const loadThree = () => {
-    void startThreeScene();
+    const initializeAtmosphere = (canvas: HTMLCanvasElement) => {
+      try {
+        const host = canvas.parentElement;
+        if (!host) {
+          throw new Error("El campo de partículas necesita un contenedor local.");
+        }
+        createAtmosphere(
+          canvas,
+          () => {
+            const bounds = host.getBoundingClientRect();
+            return Math.max(
+              0,
+              Math.min(1, -bounds.top / Math.max(bounds.height - window.innerHeight, 1)),
+            );
+          },
+          !reducedMotion,
+        );
+      } catch (error) {
+        canvas.hidden = true;
+        console.error(`No se pudo iniciar el campo local "${canvas.dataset.atmosphere}".`, error);
+      }
+    };
+
+    const atmosphereObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || !(entry.target instanceof HTMLCanvasElement)) return;
+          atmosphereObserver.unobserve(entry.target);
+          initializeAtmosphere(entry.target);
+        });
+      },
+      { rootMargin: "180px" },
+    );
+    atmosphereCanvases.forEach((canvas) => atmosphereObserver.observe(canvas));
   };
 
   if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(loadThree, { timeout: 1800 });
+    window.requestIdleCallback(() => void startAtmospheres(), { timeout: 1800 });
   } else {
-    window.setTimeout(loadThree, 450);
+    window.setTimeout(() => void startAtmospheres(), 450);
   }
 }

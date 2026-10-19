@@ -1,0 +1,115 @@
+---
+import { threats } from "../data/threats";
+
+const filters = [
+  { id: "all", label: "Todas" },
+  { id: "locust", label: "Locust" },
+  { id: "creatures", label: "Criaturas" },
+  { id: "lambent", label: "Lambent" },
+  { id: "bosses", label: "Jefes" },
+];
+const initialThreat = threats[0];
+---
+
+<section
+  class="catalog-section threat-section"
+  id="threat-database"
+  aria-labelledby="threat-title"
+  data-threat-section
+>
+  <canvas class="local-atmosphere" data-atmosphere="threats" aria-hidden="true"></canvas>
+  <div class="orientation-notice" data-orientation-notice hidden aria-live="polite">
+    <span class="rotation-device" aria-hidden="true">
+      <span class="rotation-device-screen"></span>
+      <span class="rotation-arrow"></span>
+    </span>
+    <span class="orientation-copy">
+      <strong>GIRA TU DISPOSITIVO</strong>
+      <span>Para disfrutar la experiencia cinematográfica completa, coloca tu teléfono en horizontal.</span>
+    </span>
+  </div>
+  <header class="catalog-heading section-wrap">
+    <p class="eyebrow"><span></span> INTELIGENCIA DE CAMPO // ARCHIVO CLASIFICADO</p>
+    <h2 id="threat-title">THREAT<br />DATABASE<span>IDENTIFICACIÓN DE AMENAZAS</span></h2>
+    <p>Archivo de campo de la trilogía clásica. Las fichas describen afiliación y comportamiento, no estadísticas de juego.</p>
+  </header>
+
+  <div class="catalog-layout threat-layout section-wrap" data-catalog-root="threats">
+    <figure
+      class="catalog-hero threat-hero"
+      data-catalog-visual
+      data-has-image="false"
+    >
+      <img
+        class="catalog-image"
+        src={initialThreat.image}
+        alt={initialThreat.imageAlt ?? ""}
+        width="1024"
+        height="576"
+        decoding="async"
+      />
+      <div class="catalog-visual-placeholder" data-visual-placeholder aria-hidden="true">
+        <span class="placeholder-crosshair"></span>
+        <span data-placeholder-label>ARCHIVO VISUAL PENDIENTE</span>
+      </div>
+      <div class="catalog-image-wash"></div>
+      <figcaption class="catalog-visual-caption" data-image-caption>
+        CONTACTO HOSTIL // LOCUST // ARTE PROMOCIONAL E-DAY
+      </figcaption>
+      <span class="catalog-visual-status" data-visual-status>RECURSO VISUAL PENDIENTE</span>
+    </figure>
+
+    <article class="catalog-detail threat-detail" aria-live="polite" aria-atomic="true">
+      <p class="catalog-kicker"><span class="status-light"></span> REGISTRO DE AMENAZA</p>
+      <h3 data-field="name">{initialThreat.name}</h3>
+      <p class="catalog-category" data-field="categoryLabel">{initialThreat.categoryLabel}</p>
+      <p class="catalog-classification">AFILIACIÓN: <strong data-field="classification">{initialThreat.classification}</strong></p>
+      <p class="catalog-description" data-field="description">{initialThreat.description}</p>
+      <dl class="catalog-facts">
+        <div><dt>JUEGOS</dt><dd data-field="games">{initialThreat.games}</dd></div>
+        <div><dt>COMPORTAMIENTO</dt><dd data-field="behavior">{initialThreat.behavior}</dd></div>
+        <div><dt>NOTA</dt><dd data-field="observation">{initialThreat.observation}</dd></div>
+      </dl>
+      <p class="catalog-note" data-field="note" hidden></p>
+      <div class="catalog-step-controls">
+        <button type="button" data-previous aria-label="Amenaza anterior">ANTERIOR</button>
+        <button type="button" data-next aria-label="Amenaza siguiente">SIGUIENTE</button>
+      </div>
+    </article>
+
+    <aside class="catalog-selector threat-selector" aria-label="Base de datos de amenazas">
+      <label class="threat-search">
+        <span>BUSCAR CONTACTO</span>
+        <input type="search" data-catalog-search placeholder="Nombre de amenaza" autocomplete="off" />
+      </label>
+      <div class="catalog-filter-list" role="group" aria-label="Filtrar amenazas">
+        {filters.map((filter, index) => (
+          <button
+            type="button"
+            data-catalog-filter={filter.id}
+            aria-pressed={index === 0 ? "true" : "false"}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
+      <ul class="catalog-entry-list">
+        {threats.map((threat, index) => (
+          <li data-catalog-entry data-filters={threat.filters.join(" ")}>
+            <button
+              type="button"
+              data-catalog-item={threat.id}
+              aria-pressed={index === 0 ? "true" : "false"}
+            >
+              <span class="entry-mark" aria-hidden="true"></span>
+              <span class="entry-label">{threat.name}</span>
+              <span class="entry-category">{threat.categoryLabel}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p class="catalog-empty" data-empty-state hidden>No hay contactos que coincidan con la búsqueda.</p>
+      <p class="catalog-instruction">SELECCIONA UN CONTACTO PARA ABRIR EL INFORME</p>
+    </aside>
+  </div>
+</section>

@@ -65,7 +65,7 @@ body {
 .editorial-hint,
 .editorial-nav,
 .editorial-caption,
-.sequence-counter,
+
 .hero-index,
 .arsenal-index,
 .arsenal-detail,
@@ -361,4 +361,32 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.sequence-nav a,
+.editorial-nav a {
+  font-size: 0;
+  line-height: 0;
+  background: transparent;
+}
+
+.sequence-nav a::before,
+.editorial-nav a::before {
+  width: 6px;
+  height: 6px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  content: "";
+  transition:
+    background var(--motion-base) ease,
+    box-shadow var(--motion-base) ease,
+    transform var(--motion-base) ease;
+}
+
+.sequence-nav a[aria-current="step"]::before,
+.editorial-nav a[aria-current="step"]::before {
+  border-color: var(--color-red-bright);
+  background: var(--color-red-bright);
+  box-shadow: 0 0 10px rgb(225 38 53 / 68%);
+  transform: scale(1.2);
 }
